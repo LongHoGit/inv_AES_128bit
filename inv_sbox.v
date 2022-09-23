@@ -3,7 +3,7 @@
 module inv_sbox(x,y,sb_out);
 //Substitution table converting from xy to substitution value
 input [0:3] x,y;
-output reg [0:3] sb_out;
+output reg [0:7] sb_out;
 
 always@(x,y)
 begin

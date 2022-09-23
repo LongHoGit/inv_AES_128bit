@@ -1,6 +1,5 @@
 `timescale 1ns / 1ps
 
-
 //Matrix for Inverse mixcoloumn:
 
 //0e 0b 0d 09
@@ -13,122 +12,42 @@
 
 ////////////////////////////////
 
-module inv_mix_col(i_shift,i_mix);
+module inv_mix_col(clk,i_shift,i_mix);
 
+input			clk;
+input	[0:127] i_shift;//S(row,col)
+output reg	[0:127] i_mix;//S'(row,col)
 
-input [0:127] i_shift;//S(row,col)
-output [0:127] i_mix;//S'(row,col)
+///////////////////////////////////////////////
+wire [0:127] wire_09_o, wire_0b_o, wire_0d_o, wire_0e_o;
 
+c_09 c_09_u(clk,i_shift,wire_09_o);
+c_0b c_0b_u(clk,i_shift,wire_0b_o);
+c_0d c_0d_u(clk,i_shift,wire_0d_o);
+c_0e c_0e_u(clk,i_shift,wire_0e_o);
+///////////////////////////////////////////////
+always @(posedge clk)
+ begin
 //Column0
-assign i_mix[0:7] = xtime_x0e(i_shift[0:7])^xtime_x0b(i_shift[8:15])^xtime_x0d(i_shift[16:23])^xtime_x09(i_shift[24:31]);//S'(0,0)
-assign i_mix[8:15] = xtime_x09(i_shift[0:7])^xtime_x0e(i_shift[8:15])^xtime_x0b(i_shift[16:23])^xtime_x0d(i_shift[24:31]);//S'(1,0)
-assign i_mix[16:23] = xtime_x0d(i_shift[0:7])^xtime_x09(i_shift[8:15])^xtime_x0e(i_shift[16:23])^xtime_x0b(i_shift[24:31]);//S'(2,0)
-assign i_mix[24:31] = xtime_x0b(i_shift[0:7])^xtime_x0d(i_shift[8:15])^xtime_x09(i_shift[16:23])^xtime_x0e(i_shift[24:31]);//S'(3,0)
+i_mix[0:7] = wire_0e_o[0:7]^wire_0b_o[8:15]^wire_0d_o[16:23]^wire_09_o[24:31];//S'(0,0)
+i_mix[8:15] = wire_09_o[0:7]^wire_0e_o[8:15]^wire_0b_o[16:23]^wire_0d_o[24:31];//S'(1,0)
+i_mix[16:23] = wire_0d_o[0:7]^wire_09_o[8:15]^wire_0e_o[16:23]^wire_0b_o[24:31];//S'(2,0)
+i_mix[24:31] = wire_0b_o[0:7]^wire_0d_o[8:15]^wire_09_o[16:23]^wire_0e_o[24:31];//S'(3,0)
 //Column1
-assign i_mix[32:39] = xtime_x0e(i_shift[32:39])^xtime_x0b(i_shift[40:47])^xtime_x0d(i_shift[48:55])^xtime_x09(i_shift[56:63]);//
-assign i_mix[40:47] = xtime_x09(i_shift[32:39])^xtime_x0e(i_shift[40:47])^xtime_x0b(i_shift[48:55])^xtime_x0d(i_shift[56:63]);//
-assign i_mix[48:55] = xtime_x0d(i_shift[32:39])^xtime_x09(i_shift[40:47])^xtime_x0e(i_shift[48:55])^xtime_x0b(i_shift[56:63]);//
-assign i_mix[56:63] = xtime_x0b(i_shift[32:39])^xtime_x0d(i_shift[40:47])^xtime_x09(i_shift[48:55])^xtime_x0e(i_shift[56:63]);//
+i_mix[32:39] = wire_0e_o[32:39]^wire_0b_o[40:47]^wire_0d_o[48:55]^wire_09_o[56:63];//
+i_mix[40:47] = wire_09_o[32:39]^wire_0e_o[40:47]^wire_0b_o[48:55]^wire_0d_o[56:63];//
+i_mix[48:55] = wire_0d_o[32:39]^wire_09_o[40:47]^wire_0e_o[48:55]^wire_0b_o[56:63];//
+i_mix[56:63] = wire_0b_o[32:39]^wire_0d_o[40:47]^wire_09_o[48:55]^wire_0e_o[56:63];//
 //Column2
-assign i_mix[64:71] = xtime_x0e(i_shift[64:71])^xtime_x0b(i_shift[72:79])^xtime_x0d(i_shift[80:87])^xtime_x09(i_shift[88:95]);//
-assign i_mix[72:79] = xtime_x09(i_shift[64:71])^xtime_x0e(i_shift[72:79])^xtime_x0b(i_shift[80:87])^xtime_x0d(i_shift[88:95]);//
-assign i_mix[80:87] = xtime_x0d(i_shift[64:71])^xtime_x09(i_shift[72:79])^xtime_x0e(i_shift[80:87])^xtime_x0b(i_shift[88:95]);//
-assign i_mix[88:95] = xtime_x0b(i_shift[64:71])^xtime_x0d(i_shift[72:79])^xtime_x09(i_shift[80:87])^xtime_x0e(i_shift[88:95]);//
+i_mix[64:71] = wire_0e_o[64:71]^wire_0b_o[72:79]^wire_0d_o[80:87]^wire_09_o[88:95];//
+i_mix[72:79] = wire_09_o[64:71]^wire_0e_o[72:79]^wire_0b_o[80:87]^wire_0d_o[88:95];//
+i_mix[80:87] = wire_0d_o[64:71]^wire_09_o[72:79]^wire_0e_o[80:87]^wire_0b_o[88:95];//
+i_mix[88:95] = wire_0b_o[64:71]^wire_0d_o[72:79]^wire_09_o[80:87]^wire_0e_o[88:95];//
 //Column3
-assign i_mix[96:103] = xtime_x0e(i_shift[96:103])^xtime_x0b(i_shift[104:111])^xtime_x0d(i_shift[112:119])^xtime_x09(i_shift[120:127]);//
-assign i_mix[104:111] = xtime_x09(i_shift[96:103])^xtime_x0e(i_shift[104:111])^xtime_x0b(i_shift[112:119])^xtime_x0d(i_shift[120:127]);//
-assign i_mix[112:119] = xtime_x0d(i_shift[96:103])^xtime_x09(i_shift[104:111])^xtime_x0e(i_shift[112:119])^xtime_x0b(i_shift[120:127]);//
-assign i_mix[120:127] = xtime_x0b(i_shift[96:103])^xtime_x0d(i_shift[104:111])^xtime_x09(i_shift[112:119])^xtime_x0e(i_shift[120:127]);//
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-function [0:7] xtime;//Bit string is 1-bit-left-shift and xor with itself
-	input [0:7] i;
-	begin
-		if(i[0] == 0)
-			xtime = {i[1:7],1'b0};
-		else
-			xtime = {i[1:7],1'b0}^8'h1b;
-	end
-endfunction
-
-
-
-function [0:7] xtime_x09;//Calculate value x 8'h09
-
-	input [0:7] temp;
-	reg [0:7] temp_02,temp_04,temp_08;
-
-	begin
-
-		temp_02=xtime(temp);
-
-		temp_04=xtime(temp_02);
-
-		temp_08=xtime(temp_04);
-
-		xtime_x09=temp_08^temp;
-
-	end
-
-endfunction
-
-
-
-function [0:7] xtime_x0b;//Calculate value x 8'h0b
-
-	input [0:7] temp;
-	reg [0:7] temp_02,temp_05,temp_0a;
-
-	begin
-
-		temp_02=xtime(temp);
-
-		temp_05=xtime(temp_02)^temp;
-
-		temp_0a=xtime(temp_05);
-
-		xtime_x0b=xtime(temp_0a)^temp;
-
-	end
-
-endfunction
-
-
-
-function [0:7] xtime_x0d;//Calculate value x 8'h0d
-
-	input [0:7] temp;
-	reg [0:7] temp_03,temp_06;
-
-	begin
-
-		temp_03=xtime(temp)^temp;;
-
-		temp_06=xtime(temp_03);
-
-		xtime_x0d=xtime(temp_06)^temp;
-
-	end
-
-endfunction
-
-
-
-function [0:7] xtime_x0e;//Calculate value x 8'h0e
-
-	input [0:7] temp;
-	reg [0:7] temp_03,temp_07;
-
-	begin
-
-		temp_03=xtime(temp)^temp;;
-
-		temp_07=xtime(temp_03)^temp;
-
-		xtime_x0e=xtime(temp_07);
-
-	end
-
-endfunction
-
-
+i_mix[96:103] = wire_0e_o[96:103]^wire_0b_o[104:111]^wire_0d_o[112:119]^wire_09_o[120:127];//
+i_mix[104:111] = wire_09_o[96:103]^wire_0e_o[104:111]^wire_0b_o[112:119]^wire_0d_o[120:127];//
+i_mix[112:119] = wire_0d_o[96:103]^wire_09_o[104:111]^wire_0e_o[112:119]^wire_0b_o[120:127];//
+i_mix[120:127] = wire_0b_o[96:103]^wire_0d_o[104:111]^wire_09_o[112:119]^wire_0e_o[120:127];//
+///////////////////////////////////////////////
+ end
 endmodule
